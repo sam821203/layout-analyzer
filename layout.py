@@ -38,6 +38,8 @@ for pdLayout in allPDLayout:
     # 獲取屬性值
     hasAttribute = pdLayout.has_attr('data-pd-col-pc')
     deskColNum = pdLayout.get('data-pd-col-pc')
+    pdWrapper = pdLayout.find('div', {'class': 'PD_wrapper'})
+    # deskColNum = pdLayout.get('data-pd-col-pc')
     
     if not hasAttribute or not deskColNum.isdigit():
         print('data-pd-col-pc 的值有誤')
@@ -45,6 +47,12 @@ for pdLayout in allPDLayout:
         # 將抓到的 deskColNum 塞進去 template，並塞進去 html
         template = f'<div data-col="{deskColNum}"></div>'
         colDivs.append(template)
+        
+        siblings = pdWrapper.find_all_next('li', {'class': 'PD_slide'})
+        for sibling in siblings:
+            print(sibling)
+            # print(sibling.select('[id^="layout_"]'))
+
         # print(f'商品排站 {deskColNum}x')
 
 # 使用 join() 方法將列表中的字串合併為一個完整的 HTML 字串
