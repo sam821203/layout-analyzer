@@ -21,7 +21,9 @@ root = bs4.BeautifulSoup(data, "html.parser")
 scriptTags = root.find_all('script')
 scriptContent = str(scriptTags)
 
-pattern = r"Title"
+test = "title: '日本墨之君北海道利尻昆布補染液-黑.咖啡(10ml/支X3支)'"
+# pattern =  r"title:\s*'([^']*)'"
+pattern =  r"Title:"
 m1 = re.findall(pattern, scriptContent)
 
 if m1:
@@ -46,4 +48,3 @@ else:
 #         # 將抓到的 deskColNum 塞進去 template，並塞進去 html
 #         template = f'<div data-col="{deskColNum}"></div>'
 #         colDivs.append(template)
-        
