@@ -7,9 +7,12 @@ import re
 
 url = 'https://www.etmall.com.tw/Activity/GroupSale'
 
+# window: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36
+# mac: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36
+
 # 建立 request 物件，附加 request headers 的資訊
 request = req.Request(url, headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
 })
 
 # 請求讀取
@@ -19,32 +22,19 @@ with req.urlopen(request) as response:
 # 用 BeautifulSoup 解析網頁 HTML 結構
 root = bs4.BeautifulSoup(data, "html.parser")
 scriptTags = root.find_all('script')
-scriptContent = str(scriptTags)
+# scriptContent = str(scriptTags)
 
-test = "title: '日本墨之君北海道利尻昆布補染液-黑.咖啡(10ml/支X3支)'"
+print(scriptTags)
+# test = "title: '日本墨之君北海道利尻昆布補染液-黑.咖啡(10ml/支X3支)'"
 # pattern =  r"title:\s*'([^']*)'"
-pattern =  r"Title:"
-m1 = re.findall(pattern, scriptContent)
+# pattern = r"groupSaleProductList:\s*\[(.*?)\]"
+# m1 = re.search(pattern, scriptContent, re.DOTALL)
 
-if m1:
-    print("找到符合條件的字：")
-    for match in m1:
-        print(match)
-else:
-    print("未找到符合條件的字。")
-
-# allPDLayout = root.select('div[class^="PD_layout layout_"]')
-# colDivs = []
-
-# for pdLayout in allPDLayout:
-#     hasAttribute = pdLayout.has_attr('data-pd-col-pc')
-#     deskColNum = pdLayout.get('data-pd-col-pc')
-#     pdWrapper = pdLayout.find('ul', {'class': 'PD_wrapper'})
-    
-#     # 判斷屬性值是否為空值或非數字
-#     if not hasAttribute or not deskColNum.isdigit():
-#         print('data-pd-col-pc 的值有誤')
-#     else:
-#         # 將抓到的 deskColNum 塞進去 template，並塞進去 html
-#         template = f'<div data-col="{deskColNum}"></div>'
-#         colDivs.append(template)
+# print(m1)
+# if m1:
+#     json_data = m1.group(1)
+#     # 移除單引號內的反斜線
+#     json_data = re.sub(r"\\'", "'", json_data)
+#     print(json_data)
+# else:
+#     print("未找到 groupSaleProductList 資料")
