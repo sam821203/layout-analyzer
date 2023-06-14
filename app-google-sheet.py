@@ -1,13 +1,23 @@
 import urllib.request as req
 # 用 BeautifulSoup 解析網頁 HTML 結構，不解析 json
 # import bs4
+import pygsheets
+import json
 # import gspread
 # from oauth2client.service_account import ServiceAccountCredentials
 
-url = 'https://medium.com/_/graphql'
+auth_file = "credentials.json"
+gc = pygsheets.authorize(service_file = auth_file)
 
-# window: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36
-# mac: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36
+# setting sheet
+sheet_url = "https://docs.google.com/spreadsheets/d/13Tl9G1kHYdPiRl0JBekaVnqgoUaxtbTb-o4hh01LWok/edit#gid=0" 
+sheet = gc.open_by_url(sheet_url)
+
+#選取by名稱
+sheet_sheet01 = sheet.worksheet_by_title("Sheet01")
+
+url = 'https://24h.pchome.com.tw/onsale/v5/data/data.json'
+
 # 建立 request 物件，附加 request headers 的資訊
 request = req.Request(url, headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
@@ -18,10 +28,28 @@ with req.urlopen(request) as response:
     data = response.read().decode('utf-8')
 
 # 把原始資料解析成字典/列表
-import json
-
 data = json.loads(data)
-print(data)
+block_1_products = data["OnsaleJson"][0]["Nodes"]
+
+block_1_title = []
+block_1_desc = []
+
+# 在 python 裡遍歷 list 不會拿到 1,2,3，而是第一個 dict，第二個 dict...
+for key in block_1_products:
+    block_1_title.append(key["Img"]["Title"])
+    block_1_desc.append(key["Link"]["Text1"])
+    # sheet_sheet01.update_values('A3', [['3'],['4'],['5'],['6']]) # 直的
+
+# 创建 FormatBuilder 对象并设置字体样式
+format_builder = pygsheets.FormatBuilder()
+format_builder.set_font_bold(True)
+
+sheet_sheet01.update_value('A1', "品名")
+sheet_sheet01.update_value('B1', "品名描述")
+sheet_sheet01.update_value('C1', "價格")
+# sheet_sheet01.update_values('B1', [block_1_title])
+# sheet_sheet01.update_values('B2', [block_1_desc])
+# sheet_sheet01.update_values('A3', [['3'],['4'],['5'],['6']]) # 直的
 
 
 # def gsheet(self, stocks):
